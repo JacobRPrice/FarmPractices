@@ -4,3 +4,6 @@
 .Ruserdata
 FarmPractices.Rproj
 .DS_Store
+
+# ignore raw sequencing data files
+/data/16S/
