@@ -4,8 +4,30 @@
 .Ruserdata
 FarmPractices.Rproj
 .DS_Store
+Rplots.pdf
 
-# ignore silva data
+# ignore reference data
 /data/SILVA/
+/data/UNITE_ITS/
+
+### 16S
 # ignore raw sequencing data files
 /data/16S/
+# ignore intermediate (filtering) sequencing data files
+/data/16S_filtN/
+/data/16S_filtN_cut/
+/data/16S_filt/
+# ignore output directories - primarily contains intermediate files
+/figs_16S/
+/output_16S/ 
+
+### ITS
+# ignore raw sequencing data files
+/data/ITS/
+# ignore intermediate (filtering) sequencing data files
+/data/ITS_filtN/
+/data/ITS_filtN_cut/
+/data/ITS_filt/
+# ignore output directories - primarily contains intermediate files
+/figs_ITS/
+/output_ITS/ 

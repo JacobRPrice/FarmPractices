@@ -24,16 +24,16 @@ rds_path_16S<-file.path(output_path_16S,"RDS_16S")
 if(!file_test("-d", rds_path_16S)) dir.create(rds_path_16S)
 
 
-# ### 
-# # ITS2-specific paths
-# figs_path_ITS<-file.path(proj_path,"figs_ITS")
-# if(!file_test("-d",figs_path_ITS)) dir.create(figs_path_ITS)
-# 
-# output_path_ITS <- file.path(proj_path, "output_ITS")
-# if(!file_test("-d", output_path_ITS)) dir.create(output_path_ITS)
-# 
-# rds_path_ITS<-file.path(output_path_ITS,"RDS_ITS")
-# if(!file_test("-d", rds_path_ITS)) dir.create(rds_path_ITS)
+###
+# ITS2-specific paths
+figs_path_ITS<-file.path(proj_path,"figs_ITS")
+if(!file_test("-d",figs_path_ITS)) dir.create(figs_path_ITS)
+
+output_path_ITS <- file.path(proj_path, "output_ITS")
+if(!file_test("-d", output_path_ITS)) dir.create(output_path_ITS)
+
+rds_path_ITS<-file.path(output_path_ITS,"RDS_ITS")
+if(!file_test("-d", rds_path_ITS)) dir.create(rds_path_ITS)
 
 
 # figs_path<-file.path(proj_path,"figs")
