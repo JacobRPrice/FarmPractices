@@ -19,9 +19,6 @@ Rscript ./R/bioinformatics/16S_dada.R
 # Rscript ./R/bioinformatics/16S_Taxonomy.R
 
 # date
-#Rscript ./R/bioinformatics/16S_PhyTree.R
-
-# date
 #Rscript ./R/bioinformatics/16S_SampleData.R
 
 # date
