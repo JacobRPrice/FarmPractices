@@ -5,5 +5,7 @@
 FarmPractices.Rproj
 .DS_Store
 
+# ignore silva data
+/data/SILVA/
 # ignore raw sequencing data files
 /data/16S/

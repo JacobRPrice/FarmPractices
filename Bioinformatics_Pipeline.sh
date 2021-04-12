@@ -15,8 +15,8 @@ Rscript ./R/bioinformatics/16S_QC.R
 date
 Rscript ./R/bioinformatics/16S_dada.R
 
-# date
-# Rscript ./R/bioinformatics/16S_Taxonomy.R
+date
+Rscript ./R/bioinformatics/16S_Taxonomy.R
 
 # date
 #Rscript ./R/bioinformatics/16S_SampleData.R
