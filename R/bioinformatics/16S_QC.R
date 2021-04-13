@@ -162,19 +162,17 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.cut[[1]]),
 cutFs <- sort(list.files(cut_path, pattern = "_R1.fq.gz", full.names = TRUE))
 cutRs <- sort(list.files(cut_path, pattern = "_R2.fq.gz", full.names = TRUE))
 
+pF <- plotQualityProfile(cutFs[1:6]) +
+  geom_vline(xintercept = 201, color = "red")
 ggsave(
-  plotQualityProfile(cutFs[1:6]) +
-    # geom_vline(xintercept = 10, color = "red") +
-    geom_vline(xintercept = 201, color = "red"), 
   file.path(figs_path_16S,"ReadQuality_post-cutadapt_F.png")
   )
 
+pR <- plotQualityProfile(cutRs[1:6]) +
+  geom_vline(xintercept = 201, color = "red")
 ggsave(
-  plotQualityProfile(cutRs[1:6]) +
-    # geom_vline(xintercept = 10, color = "red") +
-    geom_vline(xintercept = 201, color = "red"), 
   file.path(figs_path_16S,"ReadQuality_post-cutadapt_R.png")
-  )
+)
 
 #----------------------------------------------------------
 ########
