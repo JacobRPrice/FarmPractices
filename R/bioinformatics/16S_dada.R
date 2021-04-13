@@ -115,7 +115,7 @@ dada2:::checkConvergence(dadaFs[[1]])
 saveRDS(dadaFs, file.path(rds_path_16S, "dadaFs.RDS"))
 ggsave(
   plotErrors(dadaFs, nominalQ=TRUE),
-  file.path(figs_path_16S,"dada_errF.pdf"),
+  file.path(figs_path_16S,"dada_errF.png"),
   width = 7, height = 7, units = "in"
 )
 
@@ -136,7 +136,7 @@ dada2:::checkConvergence(dadaRs[[1]])
 saveRDS(dadaRs, file.path(rds_path_16S, "dadaRs.RDS"))
 ggsave(
   plotErrors(dadaRs, nominalQ=TRUE),
-  file.path(figs_path_16S,"dada_errR.pdf"),
+  file.path(figs_path_16S,"dada_errR.png"),
   width = 7, height = 7, units = "in"
 )
 
