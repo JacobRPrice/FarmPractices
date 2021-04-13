@@ -162,18 +162,19 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.cut[[1]]),
 cutFs <- sort(list.files(cut_path, pattern = "_R1.fq.gz", full.names = TRUE))
 cutRs <- sort(list.files(cut_path, pattern = "_R2.fq.gz", full.names = TRUE))
 
-plotQualityProfile(cutFs[1:6]) +
-  geom_vline(xintercept = 10, color = "red") +
-  geom_vline(xintercept = 201, color = "red")
+ggsave(
+  plotQualityProfile(cutFs[1:6]) +
+    # geom_vline(xintercept = 10, color = "red") +
+    geom_vline(xintercept = 201, color = "red"), 
+  file.path(figs_path_16S,"ReadQuality_post-cutadapt_F.png")
+  )
 
-ggsave(file.path(figs_path_16S,"ReadQuality_post-cutadapt_F.pdf"))
-
-plotQualityProfile(cutRs[1:6]) +
-  geom_vline(xintercept = 10, color = "red") +
-  geom_vline(xintercept = 201, color = "red")
-
-ggsave(file.path(figs_path_16S,"ReadQuality_post-cutadapt_R.pdf"))
-
+ggsave(
+  plotQualityProfile(cutRs[1:6]) +
+    # geom_vline(xintercept = 10, color = "red") +
+    geom_vline(xintercept = 201, color = "red"), 
+  file.path(figs_path_16S,"ReadQuality_post-cutadapt_R.png")
+  )
 
 #----------------------------------------------------------
 ########
@@ -192,12 +193,12 @@ trackobj <- filterAndTrim(
   filt=filtFs,
   rev=cutRs,
   filt.rev=filtRs,
-  trimLeft=10,
+  # trimLeft=10,
   truncLen=c(200,200),
   maxN=0,
   maxEE=2,
   truncQ=2, # default 2
-  rm.lowcomplex = 4, # remove low complexity sequences. 
+  # rm.lowcomplex = 4, # remove low complexity sequences. 
   compress=TRUE,
   verbose=TRUE,
   multithread = parallel::detectCores() - 1
