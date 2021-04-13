@@ -216,7 +216,7 @@ filtFs<-file.path(filt_path,basename(cutFs))
 filtRs<-file.path(filt_path,basename(cutRs))
 
 # carry out trimming and filtering of reads
-trackobj <- filterAndTrim(
+out.filtN_cut_filt <- filterAndTrim(
   fwd=cutFs,
   filt=filtFs,
   rev=cutRs,
@@ -233,9 +233,54 @@ trackobj <- filterAndTrim(
   multithread = parallel::detectCores() - 1
 )
 
-trackobj
+out.filtN_cut_filt
 
-saveRDS(trackobj, file.path(rds_path_ITS, "trackobj.RDS"))
+saveRDS(out.filtN_cut_filt, file.path(rds_path_ITS, "out.filtN_cut_filt.RDS"))
+
+#----------------------------------------------------------
+########
+# Collect statistics table of QC process
+########
+# class(out.filtN)
+# class(out.filtN_cut_filt)
+# dim(out.filtN)
+# dim(out.filtN_cut_filt)
+# colnames(out.filtN)
+# colnames(out.filtN_cut_filt)
+# head(rownames(out.filtN))
+
+out.filtN <- as.data.frame(out.filtN)
+out.filtN$file <- rownames(out.filtN)
+rownames(out.filtN) <- NULL
+colnames(out.filtN) <- c(
+  "raw_reads",
+  "no-N_reads",
+  "file"
+)
+
+out.filtN_cut_filt <- as.data.frame(out.filtN_cut_filt)
+out.filtN_cut_filt$file <- rownames(out.filtN_cut_filt)
+rownames(out.filtN_cut_filt) <- NULL
+colnames(out.filtN_cut_filt) <- c(
+  "reads_passing_cutadapt",
+  "reads_passing_QC",
+  "file"
+)
+
+track <- merge(
+  out.filtN,
+  out.filtN_cut_filt,
+  by = c("file")
+)
+dim(track)
+colnames(track)
+
+track
+
+saveRDS(
+  track,
+  file.path(rds_path_ITS, "track_QC.RDS")
+)
 
 #----------------------------------------------------------
 #----------------------------------------------------------
