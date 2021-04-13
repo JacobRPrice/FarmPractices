@@ -11,7 +11,7 @@ source(file.path(getwd(), "R/functions&utilities.R"))
 
 # prep environment and get data
 sapply(
-  c("dada2","ggplot2"), 
+  c("dada2","ggplot2", "magrittr", "dplyr"), 
   require, 
   character.only=TRUE
 )
