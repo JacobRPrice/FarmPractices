@@ -86,12 +86,42 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]),
       REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]), 
       REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[1]]))
 #                   Forward Complement Reverse RevComp
-# FWD.ForwardReads  317252          0       0       0
-# FWD.ReverseReads       0          0       0     350
-# REV.ForwardReads       3          0       0     858
-# REV.ReverseReads  313855          0       0       2
+# FWD.ForwardReads       1          0       0     168
+# FWD.ReverseReads  431309          0       0       0
+# REV.ForwardReads  470544          0       0       0
+# REV.ReverseReads       0          0       0     141
 
-# orientation of reads are normal, with only a few readthrough
+# FWD and REV are switched from their expected orientation
+REV <- "GCATCGATGAAGAACGCAGC"
+FWD <- "TCCTCCGCTTATTGATATGC"
+FWD.orients <- allOrients(FWD)
+REV.orients <- allOrients(REV)
+FWD.orients
+REV.orients
+# verify that this is the case
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]), 
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[1]]), 
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]), 
+      REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[1]]))
+#                   Forward Complement Reverse RevComp
+# FWD.ForwardReads  470544          0       0       0
+# FWD.ReverseReads       0          0       0     141
+# REV.ForwardReads       1          0       0     168
+# REV.ReverseReads  431309          0       0       0
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[2]]), 
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[2]]), 
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[2]]), 
+      REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[2]]))
+#                   Forward Complement Reverse RevComp
+# FWD.ForwardReads  458080          0       0       0
+# FWD.ReverseReads       0          0       0     158
+# REV.ForwardReads       3          0       0     176
+# REV.ReverseReads  424419          0       0       1
+# 
+# YUP, we can safely say that the orientation is the opposite of what we expected them to be. 
+# We need to remove those primers. 
+# after running dada(), and merging the results from that pipeline we will need to search for the rc of the sequences in the taxonomy steps. 
+
 
 
 #----------------------------------------------------------
@@ -148,12 +178,11 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.cut[[1]]),
       FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.cut[[1]]),
       REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.cut[[1]]),
       REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.cut[[1]]))
-# damn-near perfect. 
-# Forward Complement Reverse RevComp
+#                   Forward Complement Reverse RevComp
 # FWD.ForwardReads       0          0       0       0
-# FWD.ReverseReads       0          0       0       0
-# REV.ForwardReads       3          0       0       0
-# REV.ReverseReads       0          0       0       2
+# FWD.ReverseReads       0          0       0       1
+# REV.ForwardReads       1          0       0       0
+# REV.ReverseReads       2          0       0       0
 
 #----------------------------------------------------------
 ########
@@ -162,17 +191,19 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.cut[[1]]),
 cutFs <- sort(list.files(cut_path, pattern = "_R1.fq.gz", full.names = TRUE))
 cutRs <- sort(list.files(cut_path, pattern = "_R2.fq.gz", full.names = TRUE))
 
-plotQualityProfile(cutFs[1:6]) +
-  geom_vline(xintercept = 10, color = "red") +
-  geom_vline(xintercept = 201, color = "red")
+ggsave(
+  plotQualityProfile(cutFs[1:6]), #+
+    # geom_vline(xintercept = 10, color = "red") +
+    # geom_vline(xintercept = 201, color = "red"),
+  file.path(figs_path_ITS,"ReadQuality_post-cutadapt_F.png")
+  )
 
-ggsave(file.path(figs_path_ITS,"ReadQuality_post-cutadapt_F.pdf"))
-
-plotQualityProfile(cutRs[1:6]) +
-  geom_vline(xintercept = 10, color = "red") +
-  geom_vline(xintercept = 201, color = "red")
-
-ggsave(file.path(figs_path_ITS,"ReadQuality_post-cutadapt_R.pdf"))
+ggsave(
+  plotQualityProfile(cutRs[1:6]), #+
+    # geom_vline(xintercept = 10, color = "red") +
+    # geom_vline(xintercept = 201, color = "red"),
+  file.path(figs_path_ITS,"ReadQuality_post-cutadapt_R.png")
+  )
 
 
 #----------------------------------------------------------
@@ -192,12 +223,13 @@ trackobj <- filterAndTrim(
   filt=filtFs,
   rev=cutRs,
   filt.rev=filtRs,
-  trimLeft=10,
-  truncLen=c(200,200),
+  # trimLeft=10,
+  # truncLen=c(200,200),
   maxN=0,
   maxEE=2,
   truncQ=2, # default 2
-  rm.lowcomplex = 4, # remove low complexity sequences. 
+  minLen = 50, 
+  # rm.lowcomplex = 4, # remove low complexity sequences.
   compress=TRUE,
   verbose=TRUE,
   multithread = parallel::detectCores() - 1
