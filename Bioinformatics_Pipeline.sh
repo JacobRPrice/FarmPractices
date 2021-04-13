@@ -20,7 +20,7 @@ Rscript ./R/bioinformatics/16S_Taxonomy.R
 #Rscript ./R/bioinformatics/16S_SampleData.R
 
 # date
-#Rscript ./R/bioinformatics/16S_Phyloseq.R
+#Rscript ./R/bioinformatics/16S_phyloseq.R
 
 ###
 # ITS dada2 pipeline
@@ -39,4 +39,4 @@ Rscript ./R/bioinformatics/16S_Taxonomy.R
 #Rscript ./R/bioinformatics/ITS_SampleData.R
 
 # date
-#Rscript ./R/bioinformatics/ITS_Phyloseq.R
+#Rscript ./R/bioinformatics/ITS_phyloseq.R
