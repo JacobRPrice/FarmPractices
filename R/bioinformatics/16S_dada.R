@@ -109,7 +109,7 @@ dadaFs <- dada(
   pool = FALSE,
   errorEstimationFunction = loessErrfun_mod,
   multithread = TRUE, 
-  verbose = 2
+  verbose = TRUE
 )
 dada2:::checkConvergence(dadaFs[[1]])
 saveRDS(dadaFs, file.path(rds_path_16S, "dadaFs.RDS"))
@@ -130,7 +130,7 @@ dadaRs <- dada(
   pool = FALSE,
   errorEstimationFunction = loessErrfun_mod,
   multithread = TRUE, 
-  verbose = 2
+  verbose = TRUE
 )
 dada2:::checkConvergence(dadaRs[[1]])
 saveRDS(dadaRs, file.path(rds_path_16S, "dadaRs.RDS"))
