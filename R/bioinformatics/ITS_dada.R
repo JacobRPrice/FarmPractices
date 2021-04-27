@@ -11,8 +11,8 @@ source(file.path(getwd(), "R/functions&utilities.R"))
 
 # prep environment and get data
 sapply(
-  c("dada2","ggplot2", "magrittr", "dplyr"), 
-  require, 
+  c("dada2","ggplot2", "magrittr", "dplyr"),
+  require,
   character.only=TRUE
 )
 
@@ -36,7 +36,7 @@ head(filtRs)
 ########
 # specify error function decision
 ########
-# We will be using an error function that: 
+# We will be using an error function that:
 #   loess() : set span = 2 and implement changes to weights
 #   enforce monotonicity
 
@@ -51,16 +51,16 @@ loessErrfun_mod <- function(trans) {
         rlogp <- log10((errs+1)/tot)  # 1 psuedocount for each err, but if tot=0 will give NA
         rlogp[is.infinite(rlogp)] <- NA
         df <- data.frame(q=qq, errs=errs, tot=tot, rlogp=rlogp)
-        
+
         # original
         # ###! mod.lo <- loess(rlogp ~ q, df, weights=errs) ###!
         # mod.lo <- loess(rlogp ~ q, df, weights=tot) ###!
         # #        mod.lo <- loess(rlogp ~ q, df)
-        
-        # Gulliem Salazar's solution 
+
+        # Gulliem Salazar's solution
         # https://github.com/benjjneb/dada2/issues/938
         mod.lo <- loess(rlogp ~ q, df, weights = log10(tot),span = 2)
-        
+
         pred <- predict(mod.lo, qq)
         maxrli <- max(which(!is.na(pred)))
         minrli <- min(which(!is.na(pred)))
@@ -70,23 +70,23 @@ loessErrfun_mod <- function(trans) {
       } # if(nti != ntj)
     } # for(ntj in c("A","C","G","T"))
   } # for(nti in c("A","C","G","T"))
-  
+
   # HACKY
   MAX_ERROR_RATE <- 0.25
   MIN_ERROR_RATE <- 1e-7
   est[est>MAX_ERROR_RATE] <- MAX_ERROR_RATE
   est[est<MIN_ERROR_RATE] <- MIN_ERROR_RATE
-  
-  # enforce monotonicity 
+
+  # enforce monotonicity
   # https://github.com/benjjneb/dada2/issues/791
   estorig <- est
-  est <- est %>% 
+  est <- est %>%
     data.frame() %>%
     mutate_all(funs(case_when(. < X40 ~ X40,
                               . >= X40 ~ .))) %>% as.matrix()
   rownames(est) <- rownames(estorig)
   colnames(est) <- colnames(estorig)
-  
+
   # Expand the err matrix with the self-transition probs
   err <- rbind(1-colSums(est[1:3,]), est[1:3,],
                est[4,], 1-colSums(est[4:6,]), est[5:6,],
@@ -108,7 +108,7 @@ dadaFs <- dada(
   selfConsist = TRUE,
   pool = FALSE,
   errorEstimationFunction = loessErrfun_mod,
-  multithread = TRUE, 
+  multithread = TRUE,
   verbose = TRUE
 )
 dada2:::checkConvergence(dadaFs[[1]])
@@ -129,7 +129,7 @@ dadaRs <- dada(
   selfConsist = TRUE,
   pool = FALSE,
   errorEstimationFunction = loessErrfun_mod,
-  multithread = TRUE, 
+  multithread = TRUE,
   verbose = TRUE
 )
 dada2:::checkConvergence(dadaRs[[1]])
@@ -145,9 +145,9 @@ ggsave(
 # merge paired reads
 ########
 mergers <- mergePairs(
-  dadaFs, 
-  filtFs, 
-  dadaRs, 
+  dadaFs,
+  filtFs,
+  dadaRs,
   filtRs,
   # minOverlap=20,
   verbose=TRUE
@@ -173,7 +173,7 @@ saveRDS(seqtab.all, file.path(rds_path_ITS, "seqtab.all.RDS"))
 ########
 seqtab <- removeBimeraDenovo(
   seqtab.all,
-  multithread = TRUE, 
+  multithread = TRUE,
   verbose = TRUE
 )
 sum(seqtab)/sum(seqtab.all)
@@ -185,20 +185,20 @@ saveRDS(seqtab, file.path(rds_path_ITS, "seqtab.RDS"))
 # collect statistics
 ########
 # trackobj <- readRDS(file.path(rds_path_ITS, "trackobj.RDS"))
-# 
+#
 # head(trackobj)
-# 
+#
 # getN <- function(x) sum(getUniques(x))
 # track <- cbind(
-#   trackobj, 
-#   sapply(dadaFs, getN), 
-#   sapply(dadaRs, getN), 
-#   sapply(mergers, getN), 
+#   trackobj,
+#   sapply(dadaFs, getN),
+#   sapply(dadaRs, getN),
+#   sapply(mergers, getN),
 #   rowSums(seqtab)
 # )
 # colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
 # head(track)
-# 
+#
 # saveRDS(track, file.path(rds_path_ITS, "track.RDS"))
 
 #----------------------------------------------------------
@@ -207,5 +207,5 @@ saveRDS(seqtab, file.path(rds_path_ITS, "seqtab.RDS"))
 #----------------------------------------------------------
 #----------------------------------------------------------
 ########
-# 
+#
 ########
