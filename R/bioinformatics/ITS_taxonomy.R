@@ -29,7 +29,7 @@ seqtab <- readRDS(file.path(rds_path_ITS, "seqtab.RDS"))
 # assign taxonomy 
 ########
 
-taxtab.1to6 <- assignTaxonomy(
+taxtab <- assignTaxonomy(
   seqs = seqtab,
   refFasta = file.path(
     data_path, "/UNITE_ITS/sh_general_release_04.02.2020/sh_general_release_dynamic_04.02.2020.fasta"),
@@ -40,15 +40,14 @@ taxtab.1to6 <- assignTaxonomy(
 )
 
 saveRDS(
-  taxtab.1to6,
-  file.path(rds_path_ITS, "taxtab.1to6.RDS")
+  taxtab,
+  file.path(rds_path_ITS, "taxtab.RDS")
 )
 
-dim(taxtab.1to6)
-head(unname(taxtab.1to6))
-colnames(taxtab.1to6)
+dim(taxtab)
+head(unname(taxtab))
+colnames(taxtab)
 
-taxtab <- taxtab.1to6
 rownames(taxtab) <- NULL
 head(taxtab)
 
