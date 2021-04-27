@@ -13,6 +13,7 @@ Rplots.pdf
 ### 16S
 # ignore raw sequencing data files
 /data/16S/
+/data/16s.tar.gz
 # ignore intermediate (filtering) sequencing data files
 /data/16S_filtN/
 /data/16S_filtN_cut/
@@ -24,6 +25,7 @@ Rplots.pdf
 ### ITS
 # ignore raw sequencing data files
 /data/ITS/
+/data/ITS.tar.gz
 # ignore intermediate (filtering) sequencing data files
 /data/ITS_filtN/
 /data/ITS_filtN_cut/
