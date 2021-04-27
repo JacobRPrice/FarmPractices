@@ -81,9 +81,9 @@ primerHits <- function(primer, fn) {
   return(sum(nhits > 0))
 }
 
-rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]), 
-      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[1]]), 
-      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]), 
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]),
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[1]]),
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]),
       REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[1]]))
 #                   Forward Complement Reverse RevComp
 # FWD.ForwardReads       1          0       0     168
@@ -99,28 +99,28 @@ REV.orients <- allOrients(REV)
 FWD.orients
 REV.orients
 # verify that this is the case
-rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]), 
-      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[1]]), 
-      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]), 
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]),
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[1]]),
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]),
       REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[1]]))
 #                   Forward Complement Reverse RevComp
 # FWD.ForwardReads  470544          0       0       0
 # FWD.ReverseReads       0          0       0     141
 # REV.ForwardReads       1          0       0     168
 # REV.ReverseReads  431309          0       0       0
-rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[2]]), 
-      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[2]]), 
-      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[2]]), 
+rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[2]]),
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[2]]),
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[2]]),
       REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[2]]))
 #                   Forward Complement Reverse RevComp
 # FWD.ForwardReads  458080          0       0       0
 # FWD.ReverseReads       0          0       0     158
 # REV.ForwardReads       3          0       0     176
 # REV.ReverseReads  424419          0       0       1
-# 
-# YUP, we can safely say that the orientation is the opposite of what we expected them to be. 
-# We need to remove those primers. 
-# after running dada(), and merging the results from that pipeline we will need to search for the rc of the sequences in the taxonomy steps. 
+#
+# YUP, we can safely say that the orientation is the opposite of what we expected them to be.
+# We need to remove those primers.
+# after running dada(), and merging the results from that pipeline we will need to search for the rc of the sequences in the taxonomy steps.
 
 
 
@@ -128,7 +128,8 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[2]]),
 ########
 # use cutadapt to remove library prep primers
 ########
-cutadapt <- "/Users/jprice/Library/Python/3.9/bin/cutadapt"
+# cutadapt <- "/Users/jprice/Library/Python/3.9/bin/cutadapt"
+cutadapt <- "/Users/admin/.local/bin/cutadapt"
 system2(cutadapt, args = "--version")
 
 # create output filenames/paths for cutadapt-ed fastq files
@@ -142,32 +143,33 @@ FWD.RC <- dada2:::rc(FWD)
 REV.RC <- dada2:::rc(REV)
 
 # Trim FWD and the reverse-complement of REV off of R1 (forward reads)
-R1.flags <- paste("-g", FWD, "-a", REV.RC) 
+R1.flags <- paste("-g", FWD, "-a", REV.RC)
 
 # Trim REV and the reverse-complement of FWD off of R2 (reverse reads)
-R2.flags <- paste("-G", REV, "-A", FWD.RC) 
+R2.flags <- paste("-G", REV, "-A", FWD.RC)
 
 # Run Cutadapt
 for(i in seq_along(fnFs)) {
   system2(
-    cutadapt, 
+    cutadapt,
     args = c(
-      R1.flags, 
+      R1.flags,
       R2.flags,
       # number of CPU cores to use
-      "-j", 7,
+      # "-j", 7,
+      "-j", 40,
       # -n 2 required to remove FWD and REV from reads
-      "-n", 2, 
-      # set minimum length so empty reads are not printed. This can interfere with other steps down the road (at least with visualizing the quality profiles.). 
+      "-n", 2,
+      # set minimum length so empty reads are not printed. This can interfere with other steps down the road (at least with visualizing the quality profiles.).
       # The zero length reads to appear to be removed by the trim and filter step but it's better to be cautious and do this task explicitly here.
       # https://github.com/benjjneb/dada2/issues/159
       # https://cutadapt.readthedocs.io/en/stable/guide.html#filtering-reads
       "--minimum-length", 1,
       # output files
-      "-o", fnFs.cut[i], 
-      "-p", fnRs.cut[i], 
+      "-o", fnFs.cut[i],
+      "-p", fnRs.cut[i],
       # input files
-      fnFs.filtN[i], 
+      fnFs.filtN[i],
       fnRs.filtN[i]
     )
   )
@@ -206,7 +208,7 @@ ggsave(
 
 #----------------------------------------------------------
 ########
-# trim and filter 
+# trim and filter
 ########
 # filtered read directory
 filt_path<-file.path(data_path,"ITS_filt")
@@ -226,7 +228,7 @@ out.filtN_cut_filt <- filterAndTrim(
   maxN=0,
   maxEE=2,
   truncQ=2, # default 2
-  minLen = 50, 
+  minLen = 50,
   # rm.lowcomplex = 4, # remove low complexity sequences.
   compress=TRUE,
   verbose=TRUE,
@@ -288,5 +290,5 @@ saveRDS(
 #----------------------------------------------------------
 #----------------------------------------------------------
 ########
-# 
+#
 ########
