@@ -98,7 +98,8 @@ rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]),
 ########
 # use cutadapt to remove library prep primers
 ########
-cutadapt <- "/Users/jprice/Library/Python/3.9/bin/cutadapt"
+# cutadapt <- "/Users/jprice/Library/Python/3.9/bin/cutadapt"
+cutadapt <- "/Users/admin/.local/bin/cutadapt"
 system2(cutadapt, args = "--version")
 
 # create output filenames/paths for cutadapt-ed fastq files
@@ -125,7 +126,8 @@ for(i in seq_along(fnFs)) {
       R1.flags, 
       R2.flags,
       # number of CPU cores to use
-      "-j", 7,
+      # "-j", 7,
+      "-j", 40,
       # -n 2 required to remove FWD and REV from reads
       "-n", 2, 
       # set minimum length so empty reads are not printed. This can interfere with other steps down the road (at least with visualizing the quality profiles.). 
