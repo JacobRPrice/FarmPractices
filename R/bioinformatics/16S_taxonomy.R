@@ -31,7 +31,7 @@ seqtab <- readRDS(file.path(rds_path_16S, "seqtab.RDS"))
 taxtab.1to6 <- assignTaxonomy(
   seqs = seqtab,
   refFasta = file.path(
-    data_path, "/SILVA/silva_nr99_v138_train_set.fa.gz"),
+    data_path, "/SILVA/silva_nr99_v138.1_train_set.fa.gz"),
   minBoot = 80,
   multithread = TRUE,
   verbose = TRUE
@@ -53,7 +53,7 @@ colnames(taxtab.1to6)
 taxtab <- addSpecies(
   taxtab = taxtab.1to6,
   refFasta = file.path(
-    data_path, "/SILVA/silva_species_assignment_v138.fa.gz"),
+    data_path, "/SILVA/silva_species_assignment_v138.1.fa.gz"),
   allowMultiple = TRUE,
   tryRC = FALSE,
   verbose = TRUE
