@@ -10,8 +10,8 @@ source(file.path(getwd(), "R/functions&utilities.R"))
 
 # prep environment and get data
 sapply(
-  c("dada2"), 
-  require, 
+  c("dada2"),
+  require,
   character.only=TRUE
 )
 
@@ -22,116 +22,143 @@ set.seed(20190611)
 ########
 # load sample data 
 ########
-sd <- read.csv(file.path(data_path,"FST_metadata.csv"),sep=",",header=TRUE)
+dat <- datBAK <- read.csv(file.path(data_path,"metadata.csv"),sep=",",header=TRUE)
+dim(dat)
+names(dat)
+str(dat)
+# are there any N/A left over from exporting the csv?
+# which(dat == "N/A")
+
+# ensure variables are coded correctly
+dat$Date_Collected <- as.Date(dat$Date_Collected, format = "%m/%d/%y")
+dat$Sample_Depth <- factor(dat$Sample_Depth)
+dat$Field_Rep <- factor(dat$Field_Rep)
+dat$Field_Sys <- factor(dat$Field_Sys)
+dat$Field_EP <- factor(dat$Field_EP)
+dat$Field <- factor(dat$Field)
+dat$System <- factor(dat$System)
+dat$Till_Type <- factor(dat$Till_Type)
+dat$System2 <- factor(dat$System2)
+dat$Cover_Crop <- factor(dat$Cover_Crop)
+
+str(dat)
+
+#----------------------------------------------------------
+########
+# subset sample data to include only the relevant entries
+########
+dat <- subset(dat, Gene == "16S-V4")
+dim(dat)
+
+#----------------------------------------------------------
+########
+# load tracking objects
+########
+
+track_QC <-  readRDS(file.path(rds_path_16S, "track_QC.RDS"))
+dim(track_QC)
+str(track_QC)
+track_QC
+
+#----------------------------------------------------------
+########
+# Import dada2 pipeline results and collect statistics
+########
+dadaFs <- readRDS(file.path(rds_path_16S, "dadaFs.RDS"))
+dadaRs <- readRDS(file.path(rds_path_16S, "dadaRs.RDS"))
+mergers <- readRDS(file.path(rds_path_16S, "mergers.RDS"))
+seqtab <- readRDS(file.path(rds_path_16S, "seqtab.RDS"))
+
+getN <- function(x) sum(getUniques(x))
+
+track_dada <- cbind(
+  sapply(dadaFs, getN),
+  sapply(dadaRs, getN),
+  sapply(mergers, getN),
+  rowSums(seqtab)
+)
+colnames(track_dada) <- c(
+  "denoisedF",
+  "denoisedR",
+  "merged",
+  "nonchim"
+)
+track_dada <- as.data.frame(track_dada)
+track_dada$file <- rownames(track_dada)
+
+dim(track_dada)
+str(track_dada)
+track_dada
+
+#----------------------------------------------------------
+########
+# Merge Tracking Objects
+########
+names(track_QC)
+names(track_dada)
+
+sum(track_dada$file %in% track_QC$file)
+# we can merge using $file in each data frame
+sum(track_dada$file == track_QC$file)
+# the entries are in the same order
+
+track <- merge(
+  track_QC, track_dada, 
+  by = "file"
+)
+
+# visually check that everything worked out the way we expected it to. 
+head(track)
+head(track_QC)
+head(track_dada)
+
+# assign rownames
+rownames(track) <- track$file
+
+# save results as RDS
+saveRDS(track, file.path(rds_path_16S, "track.RDS"))
+# also export as csv for easy reading outside of R
+write.csv(track, file.path(output_path_16S, "track.csv"))
 
 
 #----------------------------------------------------------
 ########
-# format sample data
+# Merge (the merged) tracking object with sample data
 ########
+names(dat)
+names(track)
+
+# we can merge by the file names
+sum(track$file %in% dat$SRA_File_Name_1)
+# but the entries are not in the same order. 
+# The entries in the sample data file need to be in the same order that the dada results are in!
+dat$file <- dat$SRA_File_Name_1
+
+sd <- merge(
+  track,
+  dat, 
+  by = "file"
+)
+rownames(sd) <- sd$file
+
+dim(dat)
+dim(track)
 dim(sd)
 names(sd)
-str(sd)
 
-# sd$Sample_ID
-# sd$Seq.tube.ID
-sd$SWRC_.ID <- as.numeric(sd$SWRC_.ID)
-sd$Sample_or_Control <- as.factor(sd$Sample_or_Control)
+head(sd,11)
+# everything looks good to go. 
 
-sd$Sample.Site.ID
-sd$Sample.Site.ID[c(97:99)] <- NA
-sd$Sample.Site.ID
-
-sd$Date.Collected
-sd$Date.Collected[c(97:99)] <- NA
-sd$Date.Collected
-
-sd$Sample_depth_cm
-sd$Sample_depth_cm[c(97:99)] <- NA
-sd$Sample_depth_cm
-sd$Sample_depth_cm <- as.factor(sd$Sample_depth_cm)
-sd$Sample_depth_cm
-
-# sd$Site
-# sd$Sample_ID.1
-# sd$Site_PE
-# sd$Point_of_Entry
-# sd$Replicate
-
-sd$System
-sd$System[c(97:99)] <- NA
-sd$System
-sd$System <- as.factor(sd$System)
-sd$System
-
-
-sd$Till_Type
-sd$Till_Type[c(97:99)] <- NA
-sd$Till_Type
-sd$Till_Type <- as.factor(sd$Till_Type)
-sd$Till_Type
-
-sd$CoverCrop
-sd$CoverCrop[c(97:99)] <- NA
-sd$CoverCrop
-sd$CoverCrop <- as.factor(sd$CoverCrop)
-sd$CoverCrop
-
-sd$CoverCrop_Type
-
-
+# save results as RDS
+saveRDS(sd, file.path(rds_path_16S, "sd.RDS"))
+# also export as csv for easy reading outside of R
+write.csv(sd, file.path(output_path_16S, "sd.csv"))
 
 #----------------------------------------------------------
-########
-# load track object
-########
-trackobj <- readRDS(file.path(rds_path_16S, "trackobj.RDS"))
-# trackobj <- readRDS("/Users/jprice/Desktop/trackobj.RDS")
-# trackobj
-class(trackobj)
-dim(trackobj)
-trackobj <- as.data.frame(trackobj)
-trackobj
-sum(trackobj$reads.in)
-sum(trackobj$reads.out)
-trackobj$fastq <- rownames(trackobj)
-rownames(trackobj) <- NULL
-trackobj
-
-trackobj$fastq
-
-?strsplit
-strsplit(
-  x = trackobj$fastq,
-  split = "_R"
-)
-
+#----------------------------------------------------------
+#----------------------------------------------------------
+#----------------------------------------------------------
 #----------------------------------------------------------
 ########
-# merge track obj and sample data 
+#
 ########
-
-###
-# create vector to link entries in both dataframes
-###
-# metadata file contains samples ordered by (lab) tube number used during library prep. 
-# fastq files were processed according to their (sorted)  filename order
-# The result is that they're in different orders. 
-# Since we are stitching together the phyloseq object according to the order in which the fastq files were processed through dada, we should make the metadata file conform to the order of the fastq files. 
-
-paste0(
-  sd$Site,
-  "_",
-  sd
-)
-names(sd)
-
-
-
-
-
-
-
-
-
-
