@@ -17,17 +17,11 @@ Rscript ./R/bioinformatics/16S_dada.R
 date
 Rscript ./R/bioinformatics/16S_Taxonomy.R
 
-# date
-# Rscript ./R/bioinformatics/16S_SampleData.R
+date
+Rscript ./R/bioinformatics/16S_SampleData.R
 
-# date
-# Rscript ./R/bioinformatics/16S_phyloseq.R
-
-# date
-# Rscript ./R/bioinformatics/16S_decontam.R
-
-# date
-# Rscript ./R/bioinformatics/16S_pipestats.R
+date
+Rscript ./R/bioinformatics/16S_phyloseq.R
 
 ###
 # ITS dada2 pipeline
