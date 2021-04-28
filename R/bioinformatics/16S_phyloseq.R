@@ -10,7 +10,7 @@ source(file.path(getwd(), "R/functions&utilities.R"))
 
 # prep environment and get data
 sapply(
-  c("dada2", "phyloseq", "decontam"), 
+  c("dada2", "phyloseq"), 
   require, 
   character.only=TRUE
 )
@@ -22,16 +22,13 @@ set.seed(20190611)
 ########
 # load data & prep paths
 ########
-# seqtab <- readRDS(file.path(rds_path_16S, "seqtab.RDS"))
-# sampdat <- readRDS(file.path(rds_path_16S, "sampdat.RDS"))
-
 taxtab<-readRDS(file.path(rds_path_16S,"taxtab.RDS"))
-samdf<-readRDS(file.path(rds_path_16S,"samdf.RDS"))
+sd<-readRDS(file.path(rds_path_16S,"sd.RDS"))
 seqtab<-readRDS(file.path(rds_path_16S,"seqtab.RDS"))
-# fitGTR<-readRDS(file.path(rds_path_16S,"fitGTR.RDS"))
 
-
-
+dim(sd)
+dim(seqtab)
+sum(rownames(seqtab) == rownames(sd))
 
 
 #----------------------------------------------------------
@@ -40,12 +37,16 @@ seqtab<-readRDS(file.path(rds_path_16S,"seqtab.RDS"))
 ########
 ps <- phyloseq(
   tax_table(taxtab),
-  sample_data(samdf),
-  otu_table(seqtab, taxa_are_rows = FALSE)#,
-  # phy_tree(fitGTR$tree)
+  sample_data(sd),
+  otu_table(seqtab, taxa_are_rows = FALSE)
 )
 
-saveRDS(ps, file.path(rds_path_16S, "ps-orig.RDS"))
+ps 
+
+# save in RDS directory
+saveRDS(ps, file.path(rds_path_16S, "ps-orig_16S.RDS"))
+# also save in data directory 
+saveRDS(ps, file.path(data_path, "ps-orig_16S.RDS"))
 
 #----------------------------------------------------------
 ########
