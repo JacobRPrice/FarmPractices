@@ -112,6 +112,9 @@ head(track)
 head(track_QC)
 head(track_dada)
 
+# assign rownames
+rownames(track) <- track$file
+
 # save results as RDS
 saveRDS(track, file.path(rds_path_ITS, "track.RDS"))
 # also export as csv for easy reading outside of R
@@ -136,6 +139,7 @@ sd <- merge(
   dat, 
   by = "file"
 )
+rownames(sd) <- sd$file
 
 dim(dat)
 dim(track)
