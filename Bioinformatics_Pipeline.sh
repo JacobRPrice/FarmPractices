@@ -42,8 +42,8 @@ Rscript ./R/bioinformatics/ITS_dada.R
 date
 Rscript ./R/bioinformatics/ITS_Taxonomy.R
 
-# date
-# Rscript ./R/bioinformatics/ITS_SampleData.R
+date
+Rscript ./R/bioinformatics/ITS_SampleData.R
 
 # date
 # Rscript ./R/bioinformatics/ITS_phyloseq.R
