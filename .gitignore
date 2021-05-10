@@ -10,6 +10,9 @@ Rplots.pdf
 /data/SILVA/
 /data/UNITE_ITS/
 
+# ignore accessory files
+/ignore_dir/
+
 # ignore (metadata) excel file
 /data/metadata.xlsx
 
