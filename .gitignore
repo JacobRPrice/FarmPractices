@@ -13,9 +13,6 @@ Rplots.pdf
 # ignore accessory files
 /ignore_dir/
 
-# ignore (metadata) excel file
-/data/metadata.xlsx
-
 ### 16S
 # ignore raw sequencing data files
 /data/16S/
