@@ -11,7 +11,7 @@ Rplots.pdf
 /data/UNITE_ITS/
 
 # ignore accessory files
-/ignore_dir/
+/dev_scripts/
 
 ### 16S
 # ignore raw sequencing data files
