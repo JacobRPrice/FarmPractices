@@ -15,6 +15,9 @@ date
 Rscript ./R/bioinformatics/16S_dada.R
 
 date
+Rscript ./R/bioinformatics/16S_PipelineStats.R
+
+date
 Rscript ./R/bioinformatics/16S_Taxonomy.R
 
 date
@@ -32,6 +35,9 @@ Rscript ./R/bioinformatics/ITS_QC.R
 
 date
 Rscript ./R/bioinformatics/ITS_dada.R
+
+date
+Rscript ./R/bioinformatics/ITS_PipelineStats.R
 
 date
 Rscript ./R/bioinformatics/ITS_Taxonomy.R
