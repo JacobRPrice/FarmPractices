@@ -13,6 +13,7 @@ Rplots.pdf
 
 # ignore accessory files
 /dev_scripts/
+/manuscript/
 
 ### 16S
 # ignore raw sequencing data files
