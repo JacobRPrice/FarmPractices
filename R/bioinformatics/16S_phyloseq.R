@@ -26,10 +26,28 @@ taxtab<-readRDS(file.path(rds_path_16S,"taxtab.RDS"))
 sd<-readRDS(file.path(rds_path_16S,"sd.RDS"))
 seqtab<-readRDS(file.path(rds_path_16S,"seqtab.RDS"))
 
+#----------------------------------------------------------
+########
+# ensure that samples are in the same/correct order
+########
 dim(sd)
 dim(seqtab)
-sum(rownames(seqtab) == rownames(sd))
 
+# these are sorted
+rownames(seqtab)
+# these are in numerical/counting order, not the same as above. 
+names(sd)
+sd$SRA_File_Name_1
+
+# sort sd to match same order as in seqtab
+sum(
+  rownames(seqtab) ==
+  sd[order(sd$SRA_File_Name_1),]$SRA_File_Name_1
+)
+
+sd <- sd[order(sd$SRA_File_Name_1),]
+
+rownames(sd) <- sd[order(sd$SRA_File_Name_1),]$SRA_File_Name_1
 
 #----------------------------------------------------------
 ########
@@ -43,16 +61,33 @@ ps <- phyloseq(
 
 ps 
 
+# cleanup names
+sample_names(ps)
+
+cbind(
+  sample_names(ps),
+  sd$SRA_Sample_Name,
+  sd$isNeg
+)
+
+sample_names(ps) <- sd$SRA_Sample_Name
+sample_names(ps)
+
+#----------------------------------------------------------
+########
+# save
+########
+
 # save in RDS directory
 saveRDS(ps, file.path(rds_path_16S, "ps-orig_16S.RDS"))
 # also save in data directory 
 saveRDS(ps, file.path(data_path, "ps-orig_16S.RDS"))
 
 #----------------------------------------------------------
+#----------------------------------------------------------
+#----------------------------------------------------------
+#----------------------------------------------------------
+#----------------------------------------------------------
 ########
-# decontam results
+#
 ########
-# https://astrobiomike.github.io/amplicon/dada2_workflow_ex
-# https://github.com/benjjneb/decontam
-# https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-018-0605-2
-# https://benjjneb.github.io/decontam/vignettes/decontam_intro.html
