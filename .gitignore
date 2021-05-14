@@ -9,6 +9,7 @@ Rplots.pdf
 # ignore reference data
 /data/SILVA/
 /data/UNITE_ITS/
+/data/metadata/
 
 # ignore accessory files
 /dev_scripts/
