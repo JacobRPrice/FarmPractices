@@ -11,8 +11,7 @@ Rplots.pdf
 /data/UNITE_ITS/
 /data/metadata/
 
-# ignore accessory files
-/dev_scripts/
+# ignore files related to manuscript
 /manuscript/
 
 ### 16S
