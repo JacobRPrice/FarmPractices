@@ -43,6 +43,9 @@ dat$Management_System <- factor(dat$Management_System)
 dat$Pesticide_Application <- factor(dat$Pesticide_Application)
 dat$Tillage <- factor(dat$Tillage)
 dat$Cover_Crop <- factor(dat$Cover_Crop)
+dat$K <- as.numeric(dat$K)
+dat$Mg <- as.numeric(dat$Mg)
+dat$P <- as.numeric(dat$P)
 
 str(dat)
 
