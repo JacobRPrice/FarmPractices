@@ -1,4 +1,4 @@
-16S
+16S - V4
 Forward primer - 515F
 GTGYCAGCMGCCGCGGTAA
 Reverse primer - 806R
